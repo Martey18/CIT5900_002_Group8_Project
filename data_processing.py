@@ -160,4 +160,9 @@ def step3(webapifilepath,researchfilepath):
     except Exception as e:
         print("Error loading file:", e)
     
-    
+
+#run step 3
+webapifilepath = ''
+researchfilepath = 'https://github.com/dingkaihua/fsrdc-external-census-projects/blob/master/ResearchOutputs.xlsx'
+step3file = step3(webapifilepath,researchfilepath)
+df.to_csv("ProcessedData.csv")
