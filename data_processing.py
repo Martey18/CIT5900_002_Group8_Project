@@ -15,7 +15,7 @@ def text_normalize(text):
     '''
     #test for whether inputs are string so no errors show with string functions
     if isinstance(text, str):
-        return text.strip().lower().replace('.', '').replace(',', '').replace('-','').replace(' ','')
+        return re.sub(r'[\s\.,\-]', '', text.strip().lower())
     else:
         print('Input must be string')
         return None
@@ -30,7 +30,6 @@ def fuzzy_match(title1, title2):
         score = fuzz.token_sort_ratio(title1, title2)
         return score
     else:
-        print('Input must be string')
         return None
 
 def extract_doi(paperdoi):
@@ -40,12 +39,11 @@ def extract_doi(paperdoi):
     '''
     if isinstance(paperdoi, str):
         #remove http portion, whitespace and lower
-        paperdoi.lower().strip().replace("https://doi.org/", "").replace("http://doi.org/", "")
+        paperdoi = re.sub(r'^https?://(dx\.)?doi\.org/', '', paperdoi.strip().lower())
         #remove slasheds and dots
-        paperdoi.replace('.', '').replace('/', '')
+        paperdoi = paperdoi.replace('/', '').replace('.', '')
         return paperdoi
     else:
-        print('Input must be string')
         return None
 
 
@@ -60,7 +58,6 @@ def extract_doiref(reference):
             return None
         return dois[0] #get first doi only. paper should only have 1
     else:
-        print('Input must be string')
         return None
 
 
@@ -74,11 +71,11 @@ def unique_check(webapidf,researchoutputdf):
     #extract and normalize doi rows from both dataframes
     researchoutputdf['Doi'] = researchoutputdf['OutputBiblio'].apply(extract_doiref) #get dois from reference
     researchoutputdf['DoiExtract'] = researchoutputdf['Doi'].apply(extract_doi) #normalize doi
-    webapidf['DoiExtract'] = webapidf['doi'].apply(extract_doi) #normalize doi
+    webapidf['DoiExtract'] = webapidf['DOI'].apply(extract_doi) #normalize doi
 
     #normalize titles from both dataframes
     researchoutputdf['NormTitle'] = researchoutputdf['OutputTitle'].apply(text_normalize)
-    webapidf['NormTitle'] = webapidf['title'].apply(text_normalize)
+    webapidf['NormTitle'] = webapidf['OutputTitle'].apply(text_normalize)
 
     Match_type = []
     TitleScore = []
@@ -142,18 +139,19 @@ def step3(webapifilepath,researchfilepath):
         try:
             print("Files loaded successfully")
             uniquedf = unique_check(webapidf,researchoutputdf)
-            dfnondups = uniquedf.drop_duplicates(subset='Title', keep='first') #remove duplicates
+            print(uniquedf)
 
+            
             #run fsrdc checks against abstracts, datanames and datacodes
             try:
-                uniquedf['FSRDC_related'] = uniquedf['abstract'].apply(fsrdc_check) or uniquedf['dataname'].apply(fsrdc_check) or uniquedf['datacode'].apply(fsrdc_check)
+                uniquedf['FSRDC_related'] = uniquedf['Abstract'].apply(fsrdc_check)# or uniquedf['dataname'].apply(fsrdc_check) or uniquedf['datacode'].apply(fsrdc_check)
                 print("Step 3 completed successfully")
-                dfnondups = uniquedf.drop_duplicates(subset='Title', keep='first') #remove duplicates
+                dfnondups = uniquedf.drop_duplicates(subset='OutputTitle', keep='first') #remove duplicates
                 return dfnondups[dfnondups['FSRDC_related']==True]
 
             except Exception as e:
                 print("Error with FSRDC related checks:",e)
-
+            
         except Exception as e:
             print("Error running uniqueness:",e)
 
@@ -163,15 +161,10 @@ def step3(webapifilepath,researchfilepath):
         print("Error loading file:", e)
     
 
-#run step 3
-webapifilepath = ''
-researchfilepath = 'https://github.com/dingkaihua/fsrdc-external-census-projects/blob/master/ResearchOutputs.xlsx'
-step3file = step3(webapifilepath,researchfilepath)
-df.to_csv("ProcessedData.csv")
 
 #run step 3
-webapifilepath = 'https://github.com/Martey18/CIT5900_002_Group8_Project/blob/main/Updated_CombinedOutputs.csv'
-researchfilepath = 'https://github.com/dingkaihua/fsrdc-external-census-projects/blob/master/ResearchOutputs.xlsx'
+webapifilepath = 'https://raw.githubusercontent.com/Martey18/CIT5900_002_Group8_Project/refs/heads/main/Updated_CombinedOutputs.csv'
+researchfilepath = 'https://raw.githubusercontent.com/dingkaihua/fsrdc-external-census-projects/master/ResearchOutputs.xlsx'
 step3df = step3(webapifilepath,researchfilepath)
-
+print(step3df)
 step3df.to_csv("ProcessedData.csv")
