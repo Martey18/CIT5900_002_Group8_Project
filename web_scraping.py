@@ -5,14 +5,6 @@ import time
 import io
 import pandas as pd
 
-# Define FSRDC keywords
-# fsrdc_keywords = [
-#     'fsrdc', 'census bureau', 'restricted data', 'restricted microdata',
-#     'disclosure review', 'confidentiality review',
-#     'annual survey of manufactures', 'census of manufactures',
-#     'michigan rdc', 'irs', 'bea'
-# ]
-
 fsrdc_keywords = ['longitudinal business database','annual business survey',  'american housing survey',
                   'annual survey of manufactures', 'american community survey','census of manufactures', 'census edited file', 'census of wholesale trade',
                   'census of services', 'current population survey', 'census of retail trade', 'decennial census',
