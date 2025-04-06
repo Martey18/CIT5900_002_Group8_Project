@@ -158,14 +158,14 @@ def scrape_repec_papers(page_base):
                 continue
 
             filtered_papers.append({
-                'title': paper['title'],
-                'authors': authors,
-                'abstract': abstract,
-                'year': year,
-                'dataname' : dataname,
-                'datacode' : datacode,
-                'citations': citations,
-                'url': paper_url
+                'Title': paper['title'],
+                'Authors': authors,
+                'Abstract': abstract,
+                'Year': year,
+                'Dataname' : dataname,
+                'Datacode' : datacode,
+                'Citations': citations,
+                'Url': paper_url
             })
         print(idx, len(filtered_papers))
 
