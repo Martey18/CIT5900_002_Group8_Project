@@ -164,6 +164,12 @@ def step3(webapifilepath,researchfilepath):
     
 
 #run step 3
+webapifilepath = ''
+researchfilepath = 'https://github.com/dingkaihua/fsrdc-external-census-projects/blob/master/ResearchOutputs.xlsx'
+step3file = step3(webapifilepath,researchfilepath)
+df.to_csv("ProcessedData.csv")
+
+#run step 3
 webapifilepath = 'https://github.com/Martey18/CIT5900_002_Group8_Project/blob/main/Updated_CombinedOutputs.csv'
 researchfilepath = 'https://github.com/dingkaihua/fsrdc-external-census-projects/blob/master/ResearchOutputs.xlsx'
 step3df = step3(webapifilepath,researchfilepath)
