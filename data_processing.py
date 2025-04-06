@@ -142,12 +142,14 @@ def step3(webapifilepath,researchfilepath):
         try:
             print("Files loaded successfully")
             uniquedf = unique_check(webapidf,researchoutputdf)
+            dfnondups = uniquedf.drop_duplicates(subset='Title', keep='first') #remove duplicates
 
             #run fsrdc checks against abstracts, datanames and datacodes
             try:
                 uniquedf['FSRDC_related'] = uniquedf['abstract'].apply(fsrdc_check) or uniquedf['dataname'].apply(fsrdc_check) or uniquedf['datacode'].apply(fsrdc_check)
                 print("Step 3 completed successfully")
-                return uniquedf[uniquedf['FSRDC_related']==True]
+                dfnondups = uniquedf.drop_duplicates(subset='Title', keep='first') #remove duplicates
+                return dfnondups[dfnondups['FSRDC_related']==True]
 
             except Exception as e:
                 print("Error with FSRDC related checks:",e)
@@ -160,4 +162,10 @@ def step3(webapifilepath,researchfilepath):
     except Exception as e:
         print("Error loading file:", e)
     
-    
+
+#run step 3
+webapifilepath = 'https://github.com/Martey18/CIT5900_002_Group8_Project/blob/main/Updated_CombinedOutputs.csv'
+researchfilepath = 'https://github.com/dingkaihua/fsrdc-external-census-projects/blob/master/ResearchOutputs.xlsx'
+step3df = step3(webapifilepath,researchfilepath)
+
+step3df.to_csv("ProcessedData.csv")
