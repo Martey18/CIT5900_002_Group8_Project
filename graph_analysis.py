@@ -586,7 +586,7 @@ def main():
     # Step 1: Load data from CSV file
     print("\nLoading research output data...")
     # Read CSV file using pandas function
-    csv_file = 'ProcessedData.csv'  # Update this with your actual file path
+    csv_file = 'ProcessedData.csv'
     research_outputs = load_data_from_pandas(csv_file)
 
     if not research_outputs:
