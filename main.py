@@ -25,7 +25,7 @@ for i, script in enumerate(scripts_to_run):
         tmp_scpt.flush()
         print(f'Running {script_names[i]} script')
         #use subprocess to run
-        result = subprocess.run(["python", tmp_file.name])
+        result = subprocess.run(["python", tmp_scpt.name])
         #if error occurred, then exit since other scripts depend on outputs from first script
         if result.returncode != 0:
             print(f"{script_names[i]} exited with error code {result.returncode}")
