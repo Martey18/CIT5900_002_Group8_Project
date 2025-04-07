@@ -165,6 +165,10 @@ def step3(webapifilepath,researchfilepath):
 #run step 3
 webapifilepath = 'https://raw.githubusercontent.com/Martey18/CIT5900_002_Group8_Project/refs/heads/main/Updated_CombinedOutputs.csv'
 researchfilepath = 'https://raw.githubusercontent.com/dingkaihua/fsrdc-external-census-projects/master/ResearchOutputs.xlsx'
-step3df = step3(webapifilepath,researchfilepath)
-print(step3df)
-step3df.to_csv("ProcessedData.csv")
+try: 
+    step3df = step3(webapifilepath,researchfilepath)
+    step3df.head()
+    step3df.to_csv("ProcessedData.csv")
+
+except Exception as e:
+    print('Error running script:',e)
